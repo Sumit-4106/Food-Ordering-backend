@@ -10,12 +10,18 @@ const loginUser = async (req, res) => {
     try{
         const user = await userModel.findOne({ email })
         if(!user) {
-            return res.json({success: false, message: "User Does Not Exist"})
+            return res.status(401).json({
+    success: false,
+    message: "User Does Not Exist"
+})
         }
 
         const isMatch = await bycrypt.compare(password, user.password)
         if(!isMatch) {
-            return res.json({success: false, message: "Invalid Creds"})
+            return res.status(401).json({
+    success: false,
+    message: "Invalid Credentials"
+})
         }
 
         const token = createToken(user.id);
@@ -24,7 +30,10 @@ const loginUser = async (req, res) => {
 
     catch (error) {
         console.log(error)
-        res.json({ success: false, message: "Error" })
+        res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
+})
     }
 }
 
